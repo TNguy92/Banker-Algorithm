@@ -6,14 +6,14 @@ import java.io.BufferedReader;
 
 class Banker {
 
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws IOException, NumberFormatException{
 
         FileReader fr = new FileReader("input.txt");
         Scanner sc = new Scanner(fr);
         int n = sc.nextInt();
-        System.out.print("Number of Process: " + n);
+        System.out.print("Number of Process:\n" + n);
         int m = sc.nextInt();
-        System.out.print("\nNumber of Resources: " + m);
+        System.out.print("\nNumber of Resources:\n" + m);
 
         int available[] = new int[m];
         int max[][] = new int[n][m];
@@ -27,9 +27,10 @@ class Banker {
         tmp = sc.nextLine();
         System.out.print(tmp);
         inputLine = new String[(tmp.split(" ")).length];
-        tmp = sc.nextLine();
+
         while(sc.hasNextLine())
         {
+            tmp = sc.nextLine();
             inputLine = tmp.split(" ");
             System.out.print("\nAllocation:");
             for (int i = 0; i < n; i++)
@@ -39,7 +40,6 @@ class Banker {
                     allocation[i][j] = Integer.parseInt(inputLine[j]);
                     System.out.print(" " + allocation[i][j]);
                 }
-
                 System.out.print("\nClaim Max: ");
                 i = 0;
                 for (int j = 0; j < n; j++, i++)
@@ -47,22 +47,15 @@ class Banker {
                     if ((j + m) < inputLine.length)
                     {
                         max[i][j] = Integer.parseInt(inputLine[j + m]);
+                        need[i][j] = max[i][j] - allocation[i][j];
                         System.out.print(" " + max[i][j]);
                     }
                 }
 
             }
-            tmp = sc.nextLine();
         }
-        for(int i = 0; i < n; i++)
-        {
-            for(int j = 0; j < m; j++)
-            {
-                need[i][j] = max[i][j] - allocation[i][j];
-            }
-        }
-        boolean finish[] = new boolean[n];
 
+        boolean finish[] = new boolean[n];
         for(int i = 0; i < n; i++)
         {
             finish[i] = false;
@@ -88,7 +81,7 @@ class Banker {
                     {
                         for(j=0; j < m; j++)
                         {
-                            available[j] = available[j] - need[i][j] + allocation[i][j];
+                            available[j] = available[j] + allocation[i][j];
                         }
                         finish[i] = true;
                         check = true;
